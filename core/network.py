@@ -1,4 +1,3 @@
-# core/network.py
 import socket
 import json
 import threading
@@ -20,33 +19,53 @@ class ServerThread(QThread):
         server = None
         try:
             server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # ВАЖНО: Разрешаем повторное использование адреса (чтобы не было ошибки при перезапуске)
+            server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             server.bind(('0.0.0.0', self.port))
             server.listen(5)
+
+            # ВАЖНО: Устанавливаем таймаут, чтобы accept не блокировал поток навечно
+            server.settimeout(1.0)
+
             self.log_message.emit(f"Server started on port {self.port}")
 
             while self.running:
-                client, addr = server.accept()
-                threading.Thread(target=self._handle_client, args=(client, addr)).start()
+                try:
+                    # Теперь accept будет ждать 1 секунду и выбрасывать исключение timeout
+                    client, addr = server.accept()
+                    threading.Thread(target=self._handle_client, args=(client, addr)).start()
+                except socket.timeout:
+                    # Таймаут вышел, просто продолжаем цикл и проверяем self.running
+                    continue
+                except OSError:
+                    # Сокет был закрыт принудительно
+                    break
+
         except Exception as e:
             self.log_message.emit(f"Server Error: {e}")
         finally:
             if server:
                 server.close()
+            self.log_message.emit("Server stopped")
 
     def _handle_client(self, client_socket, addr):
         try:
-            data = client_socket.recv(1024 * 32)  # Увеличим буфер для ключей
+            # Клиентский сокет тоже должен иметь таймаут или быть блокирующим,
+            # но здесь ставим таймаут на всякий случай
+            client_socket.settimeout(5.0)
+            data = client_socket.recv(1024 * 32)
             if data:
                 packet = json.loads(data.decode('utf-8'))
                 self.new_packet_received.emit(packet, addr[0])
-        except Exception as e:
-            print(f"Error handling client: {e}")
+        except Exception:
+            pass  # Игнорируем ошибки чтения/таймауты от клиентов
         finally:
             client_socket.close()
 
     def stop(self):
         self.running = False
-        self.quit()
+        # Мы не вызываем здесь wait(), чтобы не блокировать UI.
+        # Поток завершится сам через макс. 1 секунду (из-за таймаута).
 
 
 class NetworkManager(QObject):
@@ -57,13 +76,19 @@ class NetworkManager(QObject):
         super().__init__()
         self.sec_man = security_manager
         self.server_thread = None
-        self.known_peers = {}  # {ip: public_key_pem}
-        self.my_listening_port = 5000  # Порт по умолчанию
+        self.known_peers = {}
+        self.my_listening_port = 5000
 
     def start_server(self, port):
-        self.my_listening_port = port  # Запоминаем порт, чтобы отправлять его другим
+        self.my_listening_port = port
+
+        # Если сервер уже запущен
         if self.server_thread and self.server_thread.isRunning():
+            # Говорим ему остановиться
             self.server_thread.stop()
+            # Ждем завершения (максимум 1 сек + небольшая дельта),
+            # чтобы освободить порт перед новым запуском.
+            # wait() здесь безопасен, так как мы добавили timeout в run()
             self.server_thread.wait()
 
         self.server_thread = ServerThread(port)
@@ -72,11 +97,10 @@ class NetworkManager(QObject):
         self.server_thread.start()
 
     def send_handshake(self, target_ip, target_port, is_reply=False):
-        """Отправляем свой ключ и СВОЙ ПОРТ, чтобы нам могли ответить"""
         packet = {
             "type": PacketType.HANDSHAKE,
             "pub_key": self.sec_man.get_public_key_pem(),
-            "sender_listening_port": self.my_listening_port,  # <-- ВАЖНО
+            "sender_listening_port": self.my_listening_port,
             "is_reply": is_reply
         }
 
@@ -93,7 +117,6 @@ class NetworkManager(QObject):
         threading.Thread(target=_send_thread).start()
 
     def send_message(self, target_ip, target_port, text):
-        # Проверяем, есть ли ключ
         if target_ip not in self.known_peers:
             self.log_signal.emit(f"Key for {target_ip} missing. Initiating handshake...")
             self.send_handshake(target_ip, target_port, is_reply=False)
@@ -116,7 +139,7 @@ class NetworkManager(QObject):
 
     def _send_raw(self, ip, port, data_dict):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(2)  # Таймаут 2 секунды
+        sock.settimeout(2)
         sock.connect((ip, int(port)))
         sock.send(json.dumps(data_dict).encode('utf-8'))
         sock.close()
@@ -125,19 +148,13 @@ class NetworkManager(QObject):
         p_type = packet.get("type")
 
         if p_type == PacketType.HANDSHAKE:
-            # 1. Сохраняем ключ
             self.known_peers[sender_ip] = packet["pub_key"]
-
-            # 2. Узнаем, на каком порту слушает собеседник (или дефолт 5000)
             peer_listening_port = packet.get("sender_listening_port", 5000)
-
             is_reply = packet.get("is_reply", False)
 
             if is_reply:
-                # Это был ответ на наш запрос. Все готово.
                 self.log_signal.emit(f"✅ Connection established with {sender_ip}")
             else:
-                # Это новый запрос. НУЖНО ОТВЕТИТЬ.
                 self.log_signal.emit(f"Handshake from {sender_ip}. Auto-replying...")
                 self.send_handshake(sender_ip, peer_listening_port, is_reply=True)
 
