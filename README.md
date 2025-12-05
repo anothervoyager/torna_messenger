@@ -1,5 +1,5 @@
 # Torna messenger
-
+- Простой мессенджер для демонстрации. Проект создан исключительно в учебных целях.
 <img width="658" height="529" alt="изображение" src="https://github.com/user-attachments/assets/cc02cc1a-f7bf-4940-8a6b-f0e3d25543da" />
 
 # Usage:
