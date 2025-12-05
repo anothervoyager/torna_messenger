@@ -1,6 +1,5 @@
 # Usage:
 ## Установите зависимости:
-```markdown
 ```bash
 pip install PySide6 cryptography
 ```
