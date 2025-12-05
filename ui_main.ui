@@ -379,6 +379,56 @@ border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
 пересылку (Relay)</string>
      </property>
     </widget>
+    <widget class="QLineEdit" name="line_relay_ip">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>320</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #FBF1C7;
+background-color: #665C54;
+border-radius: 15px;                     /* &lt;----  закругление краев  */ 
+font-weight: bold;
+font-size: 10pt;
+font-family: Montserrat ExtraBold;
+border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
+     </property>
+     <property name="text">
+      <string>IP адрес посредника</string>
+     </property>
+     <property name="placeholderText">
+      <string>IP адрес посредника</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="line_relay_port">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>370</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #FBF1C7;
+background-color: #665C54;
+border-radius: 15px;                     /* &lt;----  закругление краев  */ 
+font-weight: bold;
+font-size: 10pt;
+font-family: Montserrat ExtraBold;
+border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
+     </property>
+     <property name="text">
+      <string>Порт посредника</string>
+     </property>
+     <property name="placeholderText">
+      <string>Порт посредника</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

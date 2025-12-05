@@ -1,15 +1,13 @@
-# main.py
 import sys
 import datetime
 import socket
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PySide6.QtCore import Slot
 
-# Импорт сгенерированного Qt Designer файла
-# Убедитесь, что файл ui_main.py лежит рядом
+# Импорт вашего UI
 from ui_main import Ui_MainWindow
 
-# Импорт наших модулей
+# Импорт ядра
 from core.crypto import SecurityManager
 from core.database import StorageManager
 from core.network import NetworkManager
@@ -21,23 +19,18 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # Инициализация ядра
         self.db = StorageManager()
         self.crypto = SecurityManager()
         self.network = NetworkManager(self.crypto)
 
-        # Восстановление настроек
         self.load_settings()
 
-        # Сигналы UI
         self.ui.button_apply.clicked.connect(self.on_apply_settings)
         self.ui.button_send_message.clicked.connect(self.on_send_message)
 
-        # Сигналы Сети
         self.network.log_signal.connect(self.log_system_message)
         self.network.msg_received.connect(self.on_incoming_message)
 
-        # Показать свой IP
         my_ip = self.get_local_ip()
         self.ui.text_browser.append(f"<b>My Local IP: {my_ip}</b>")
 
@@ -57,7 +50,11 @@ class MainWindow(QMainWindow):
         self.ui.line_ip_address.setText(self.db.get_setting("target_ip"))
         self.ui.line_port.setText(self.db.get_setting("target_port"))
 
-        # Автозапуск сервера, если порт был сохранен
+        # Загрузка настроек релея (если есть такие поля в UI)
+        if hasattr(self.ui, 'line_relay_ip'):
+            self.ui.line_relay_ip.setText(self.db.get_setting("relay_ip"))
+            self.ui.line_relay_port.setText(self.db.get_setting("relay_port"))
+
         own_port = self.ui.line_own_port.text()
         if own_port and own_port.isdigit():
             self.network.start_server(int(own_port))
@@ -74,41 +71,62 @@ class MainWindow(QMainWindow):
         self.db.save_setting("target_ip", target_ip)
         self.db.save_setting("target_port", target_port)
 
+        # Сохранение релея
+        if hasattr(self.ui, 'line_relay_ip'):
+            self.db.save_setting("relay_ip", self.ui.line_relay_ip.text())
+            self.db.save_setting("relay_port", self.ui.line_relay_port.text())
+
         if own_port.isdigit():
             self.network.start_server(int(own_port))
-            QMessageBox.information(self, "OK", f"Server restarted on port {own_port}")
+            QMessageBox.information(self, "Success", f"Server restarted on port {own_port}")
         else:
             QMessageBox.warning(self, "Error", "Port must be a number")
 
     @Slot()
     def on_send_message(self):
         text = self.ui.text_edit_message.toPlainText()
-        if not text:
-            return
+        if not text: return
 
         target_ip = self.ui.line_ip_address.text()
         target_port = self.ui.line_port.text()
         username = self.ui.line_your_name.text() or "Me"
 
         if not target_ip or not target_port:
-            QMessageBox.warning(self, "Error", "Enter Target IP and Port")
+            QMessageBox.warning(self, "Error", "Target IP/Port required")
             return
 
-        # Попытка отправки
-        success = self.network.send_message(target_ip, int(target_port), text)
+        # Проверка на использование Relay
+        use_relay = False
+        relay_ip = ""
+        relay_port = ""
+
+        # Безопасная проверка наличия элементов UI (чтобы не упало, если вы их не добавили)
+        if hasattr(self.ui, 'check_box_relay') and self.ui.check_box_relay.isChecked():
+            use_relay = True
+            relay_ip = self.ui.line_relay_ip.text()
+            relay_port = self.ui.line_relay_port.text()
+            if not relay_ip or not relay_port:
+                QMessageBox.warning(self, "Error", "Relay IP/Port required")
+                return
+
+        success = False
+        if use_relay:
+            success = self.network.send_via_relay(target_ip, int(target_port),
+                                                  relay_ip, int(relay_port), text)
+        else:
+            success = self.network.send_message(target_ip, int(target_port), text)
 
         timestamp = datetime.datetime.now().strftime("%H:%M:%S")
 
-        if not success:
+        if success:
+            mode = " (via Relay)" if use_relay else ""
+            formatted_msg = f"<span style='color:blue'>[{timestamp}] {username}: {text} ✅{mode}</span>"
+            self.ui.text_browser.append(formatted_msg)
+            self.ui.text_edit_message.clear()
+            self.db.add_message(timestamp, username, text, "sent")
+        else:
             self.ui.text_browser.append(
-                f"<span style='color:gray'>[{timestamp}] ⚠️ Handshaking with {target_ip}... Click send again in a moment.</span>")
-            return
-
-        # Если успешно
-        formatted_msg = f"<span style='color:blue'>[{timestamp}] {username}: {text} ✅</span>"
-        self.ui.text_browser.append(formatted_msg)
-        self.ui.text_edit_message.clear()
-        self.db.add_message(timestamp, username, text, "sent")
+                f"<span style='color:gray'>[{timestamp}] ⏳ Establishing connection... Try again.</span>")
 
     @Slot(str, str, str)
     def on_incoming_message(self, timestamp, sender_ip, text):

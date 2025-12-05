@@ -1,4 +1,3 @@
-# core/crypto.py
 import os
 import base64
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
@@ -42,12 +41,12 @@ class SecurityManager:
         return serialization.load_pem_public_key(pem_str.encode('utf-8'))
 
     def encrypt_hybrid(self, message: str, recipient_pub_key_pem: str) -> dict:
-        # 1. AES ключ для данных
+        # 1. AES
         session_key = Fernet.generate_key()
         cipher_suite = Fernet(session_key)
         encrypted_text = cipher_suite.encrypt(message.encode('utf-8'))
 
-        # 2. Шифруем AES ключ с помощью RSA получателя
+        # 2. RSA
         recipient_key = self.load_public_key_from_pem(recipient_pub_key_pem)
         encrypted_session_key = recipient_key.encrypt(
             session_key,

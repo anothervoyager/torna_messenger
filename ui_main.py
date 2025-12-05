@@ -191,6 +191,26 @@ class Ui_MainWindow(object):
         self.check_box_relay = QCheckBox(self.widget_control_panel_2)
         self.check_box_relay.setObjectName(u"check_box_relay")
         self.check_box_relay.setGeometry(QRect(20, 280, 221, 31))
+        self.line_relay_ip = QLineEdit(self.widget_control_panel_2)
+        self.line_relay_ip.setObjectName(u"line_relay_ip")
+        self.line_relay_ip.setGeometry(QRect(10, 320, 231, 41))
+        self.line_relay_ip.setStyleSheet(u"color: #FBF1C7;\n"
+"background-color: #665C54;\n"
+"border-radius: 15px;                     /* <----  \u0437\u0430\u043a\u0440\u0443\u0433\u043b\u0435\u043d\u0438\u0435 \u043a\u0440\u0430\u0435\u0432  */ \n"
+"font-weight: bold;\n"
+"font-size: 10pt;\n"
+"font-family: Montserrat ExtraBold;\n"
+"border: 2px solid #38302e; /*<----- \u0446\u0432\u0435\u0442 \u0433\u0440\u0430\u043d\u0438\u0446\u044b*/")
+        self.line_relay_port = QLineEdit(self.widget_control_panel_2)
+        self.line_relay_port.setObjectName(u"line_relay_port")
+        self.line_relay_port.setGeometry(QRect(10, 370, 231, 41))
+        self.line_relay_port.setStyleSheet(u"color: #FBF1C7;\n"
+"background-color: #665C54;\n"
+"border-radius: 15px;                     /* <----  \u0437\u0430\u043a\u0440\u0443\u0433\u043b\u0435\u043d\u0438\u0435 \u043a\u0440\u0430\u0435\u0432  */ \n"
+"font-weight: bold;\n"
+"font-size: 10pt;\n"
+"font-family: Montserrat ExtraBold;\n"
+"border: 2px solid #38302e; /*<----- \u0446\u0432\u0435\u0442 \u0433\u0440\u0430\u043d\u0438\u0446\u044b*/")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -215,5 +235,9 @@ class Ui_MainWindow(object):
         self.line_own_port.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u0412\u0430\u0448 \u043f\u043e\u0440\u0442", None))
         self.check_box_relay.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0430\u043d\u043e\u043d\u0438\u043c\u043d\u0443\u044e\n"
 "\u043f\u0435\u0440\u0435\u0441\u044b\u043b\u043a\u0443 (Relay)", None))
+        self.line_relay_ip.setText(QCoreApplication.translate("MainWindow", u"IP \u0430\u0434\u0440\u0435\u0441 \u043f\u043e\u0441\u0440\u0435\u0434\u043d\u0438\u043a\u0430", None))
+        self.line_relay_ip.setPlaceholderText(QCoreApplication.translate("MainWindow", u"IP \u0430\u0434\u0440\u0435\u0441 \u043f\u043e\u0441\u0440\u0435\u0434\u043d\u0438\u043a\u0430", None))
+        self.line_relay_port.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0440\u0442 \u043f\u043e\u0441\u0440\u0435\u0434\u043d\u0438\u043a\u0430", None))
+        self.line_relay_port.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0440\u0442 \u043f\u043e\u0441\u0440\u0435\u0434\u043d\u0438\u043a\u0430", None))
     # retranslateUi
 
