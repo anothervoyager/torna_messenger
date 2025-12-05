@@ -1,2 +1,10 @@
 /messenger.db
 /my_private_key.pem
+venv/
+env/
+*.egg-info/
+*.pyc
+__pycache__/
+.idea/
+.DS_Store
+Thumbs.db
