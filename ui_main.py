@@ -202,12 +202,17 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Torna Messenger", None))
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"\u0427\u0430\u0442", None))
         self.button_send_message.setText("")
+        self.text_edit_message.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0447\u0442\u043e-\u043d\u0438\u0431\u0443\u0434\u044c...", None))
         self.line_ip_address.setText(QCoreApplication.translate("MainWindow", u"IP \u0430\u0434\u0440\u0435\u0441 \u043f\u043e\u043b\u0443\u0447\u0430\u0442\u0435\u043b\u044f", None))
+        self.line_ip_address.setPlaceholderText(QCoreApplication.translate("MainWindow", u"IP \u0430\u0434\u0440\u0435\u0441 \u043f\u043e\u043b\u0443\u0447\u0430\u0442\u0435\u043b\u044f", None))
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438", None))
         self.line_port.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0440\u0442 \u043f\u043e\u043b\u0443\u0447\u0430\u0442\u0435\u043b\u044f", None))
+        self.line_port.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0440\u0442 \u043f\u043e\u043b\u0443\u0447\u0430\u0442\u0435\u043b\u044f", None))
         self.line_your_name.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0430\u0448\u0435 \u041e\u0442\u043e\u0431\u0440\u0430\u0436\u0430\u0435\u043c\u043e\u0435 \u0438\u043c\u044f", None))
+        self.line_your_name.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u0412\u0430\u0448\u0435 \u041e\u0442\u043e\u0431\u0440\u0430\u0436\u0430\u0435\u043c\u043e\u0435 \u0438\u043c\u044f", None))
         self.button_apply.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u0438\u043c\u0435\u043d\u0438\u0442\u044c", None))
         self.line_own_port.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0430\u0448 \u043f\u043e\u0440\u0442", None))
+        self.line_own_port.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u0412\u0430\u0448 \u043f\u043e\u0440\u0442", None))
         self.check_box_relay.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0430\u043d\u043e\u043d\u0438\u043c\u043d\u0443\u044e\n"
 "\u043f\u0435\u0440\u0435\u0441\u044b\u043b\u043a\u0443 (Relay)", None))
     # retranslateUi

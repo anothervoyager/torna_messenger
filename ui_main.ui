@@ -173,6 +173,9 @@ font-size: 10pt;
 font-family: Montserrat ExtraBold;
 border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
      </property>
+     <property name="placeholderText">
+      <string>Напишите что-нибудь...</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="widget_control_panel_2" native="true">
@@ -209,6 +212,9 @@ font-family: Montserrat ExtraBold;
 border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
      </property>
      <property name="text">
+      <string>IP адрес получателя</string>
+     </property>
+     <property name="placeholderText">
       <string>IP адрес получателя</string>
      </property>
     </widget>
@@ -266,6 +272,9 @@ border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
      <property name="text">
       <string>Порт получателя</string>
      </property>
+     <property name="placeholderText">
+      <string>Порт получателя</string>
+     </property>
     </widget>
     <widget class="QLineEdit" name="line_your_name">
      <property name="geometry">
@@ -286,6 +295,9 @@ font-family: Montserrat ExtraBold;
 border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
      </property>
      <property name="text">
+      <string>Ваше Отображаемое имя</string>
+     </property>
+     <property name="placeholderText">
       <string>Ваше Отображаемое имя</string>
      </property>
     </widget>
@@ -347,6 +359,9 @@ font-family: Montserrat ExtraBold;
 border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
      </property>
      <property name="text">
+      <string>Ваш порт</string>
+     </property>
+     <property name="placeholderText">
       <string>Ваш порт</string>
      </property>
     </widget>
