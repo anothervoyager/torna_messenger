@@ -42,15 +42,12 @@ class SecurityManager:
         return serialization.load_pem_public_key(pem_str.encode('utf-8'))
 
     def encrypt_hybrid(self, message: str, recipient_pub_key_pem: str) -> dict:
-        """Гибридное шифрование (AES + RSA)"""
-        # 1. Генерируем сессионный ключ AES
+        # 1. AES ключ для данных
         session_key = Fernet.generate_key()
         cipher_suite = Fernet(session_key)
-
-        # 2. Шифруем само сообщение
         encrypted_text = cipher_suite.encrypt(message.encode('utf-8'))
 
-        # 3. Шифруем сессионный ключ публичным ключом получателя
+        # 2. Шифруем AES ключ с помощью RSA получателя
         recipient_key = self.load_public_key_from_pem(recipient_pub_key_pem)
         encrypted_session_key = recipient_key.encrypt(
             session_key,
@@ -67,11 +64,9 @@ class SecurityManager:
         }
 
     def decrypt_hybrid(self, package: dict) -> str:
-        """Расшифровка входящего пакета"""
         enc_session_key = base64.b64decode(package["enc_session_key"])
         ciphertext = base64.b64decode(package["ciphertext"])
 
-        # 1. Достаем сессионный ключ своим приватным ключом
         session_key = self.private_key.decrypt(
             enc_session_key,
             padding.OAEP(
@@ -81,6 +76,5 @@ class SecurityManager:
             )
         )
 
-        # 2. Расшифровываем текст
         cipher_suite = Fernet(session_key)
         return cipher_suite.decrypt(ciphertext).decode('utf-8')

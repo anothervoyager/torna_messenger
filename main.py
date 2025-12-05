@@ -1,10 +1,12 @@
+# main.py
 import sys
 import datetime
 import socket
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PySide6.QtCore import Slot
 
-# Импорт UI (убедитесь, что ui_main.py лежит рядом)
+# Импорт сгенерированного Qt Designer файла
+# Убедитесь, что файл ui_main.py лежит рядом
 from ui_main import Ui_MainWindow
 
 # Импорт наших модулей
@@ -19,25 +21,25 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # 1. Инициализация систем
+        # Инициализация ядра
         self.db = StorageManager()
-        self.crypto = SecurityManager()  # Ключи загружаются или создаются
+        self.crypto = SecurityManager()
         self.network = NetworkManager(self.crypto)
 
-        # 2. Восстановление настроек из БД
+        # Восстановление настроек
         self.load_settings()
 
-        # 3. Подключение сигналов UI
+        # Сигналы UI
         self.ui.button_apply.clicked.connect(self.on_apply_settings)
         self.ui.button_send_message.clicked.connect(self.on_send_message)
 
-        # 4. Подключение сетевых сигналов
+        # Сигналы Сети
         self.network.log_signal.connect(self.log_system_message)
         self.network.msg_received.connect(self.on_incoming_message)
 
-        # Показываем свой IP для удобства
+        # Показать свой IP
         my_ip = self.get_local_ip()
-        self.ui.text_browser.append(f"<i>My Local IP: {my_ip}</i>")
+        self.ui.text_browser.append(f"<b>My Local IP: {my_ip}</b>")
 
     def get_local_ip(self):
         try:
@@ -50,20 +52,18 @@ class MainWindow(QMainWindow):
             return "127.0.0.1"
 
     def load_settings(self):
-        """Загрузка сохраненных данных в поля ввода"""
         self.ui.line_your_name.setText(self.db.get_setting("username"))
         self.ui.line_own_port.setText(self.db.get_setting("own_port"))
         self.ui.line_ip_address.setText(self.db.get_setting("target_ip"))
         self.ui.line_port.setText(self.db.get_setting("target_port"))
 
-        # Если порт задан, сразу запускаем сервер
+        # Автозапуск сервера, если порт был сохранен
         own_port = self.ui.line_own_port.text()
-        if own_port:
+        if own_port and own_port.isdigit():
             self.network.start_server(int(own_port))
 
     @Slot()
     def on_apply_settings(self):
-        """Сохранение настроек и перезапуск сервера"""
         name = self.ui.line_your_name.text()
         own_port = self.ui.line_own_port.text()
         target_ip = self.ui.line_ip_address.text()
@@ -74,16 +74,14 @@ class MainWindow(QMainWindow):
         self.db.save_setting("target_ip", target_ip)
         self.db.save_setting("target_port", target_port)
 
-        # Перезапуск сервера
         if own_port.isdigit():
             self.network.start_server(int(own_port))
-            QMessageBox.information(self, "Success", f"Settings saved. Listening on port {own_port}")
+            QMessageBox.information(self, "OK", f"Server restarted on port {own_port}")
         else:
             QMessageBox.warning(self, "Error", "Port must be a number")
 
     @Slot()
     def on_send_message(self):
-        """Обработка кнопки отправки"""
         text = self.ui.text_edit_message.toPlainText()
         if not text:
             return
@@ -93,31 +91,27 @@ class MainWindow(QMainWindow):
         username = self.ui.line_your_name.text() or "Me"
 
         if not target_ip or not target_port:
-            QMessageBox.warning(self, "Error", "Target IP/Port required")
+            QMessageBox.warning(self, "Error", "Enter Target IP and Port")
             return
 
-        # Попытка отправки через сеть
+        # Попытка отправки
         success = self.network.send_message(target_ip, int(target_port), text)
 
         timestamp = datetime.datetime.now().strftime("%H:%M:%S")
-        status_emoji = "✅" if success else "❌ (Key Error/Fail)"
 
         if not success:
             self.ui.text_browser.append(
-                f"<span style='color:orange'>[{timestamp}] System: Handshake sent. Try again in a second.</span>")
+                f"<span style='color:gray'>[{timestamp}] ⚠️ Handshaking with {target_ip}... Click send again in a moment.</span>")
             return
 
-        # Отображение в своем чате
-        formatted_msg = f"<span style='color:blue'>[{timestamp}] {username}: {text} {status_emoji}</span>"
+        # Если успешно
+        formatted_msg = f"<span style='color:blue'>[{timestamp}] {username}: {text} ✅</span>"
         self.ui.text_browser.append(formatted_msg)
         self.ui.text_edit_message.clear()
-
-        # Сохранение в историю
         self.db.add_message(timestamp, username, text, "sent")
 
     @Slot(str, str, str)
     def on_incoming_message(self, timestamp, sender_ip, text):
-        """Слот, вызываемый при получении сообщения из сети"""
         formatted_msg = f"<span style='color:green'>[{timestamp}] {sender_ip}: {text} 📩</span>"
         self.ui.text_browser.append(formatted_msg)
         self.db.add_message(timestamp, sender_ip, text, "received")
