@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QLabel, QLineEdit,
-    QMainWindow, QPushButton, QSizePolicy, QTabWidget,
-    QTextBrowser, QTextEdit, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QLabel,
+    QLineEdit, QMainWindow, QPushButton, QSizePolicy,
+    QTabWidget, QTextBrowser, QTextEdit, QWidget)
 import resources_rc
 
 class Ui_MainWindow(object):
@@ -148,7 +148,7 @@ class Ui_MainWindow(object):
 "border: 2px solid #38302e; /*<----- \u0446\u0432\u0435\u0442 \u0433\u0440\u0430\u043d\u0438\u0446\u044b*/")
         self.line_your_name = QLineEdit(self.widget_control_panel_2)
         self.line_your_name.setObjectName(u"line_your_name")
-        self.line_your_name.setGeometry(QRect(10, 130, 231, 41))
+        self.line_your_name.setGeometry(QRect(10, 180, 231, 41))
         self.line_your_name.setStyleSheet(u"color: #FBF1C7;\n"
 "background-color: #665C54;\n"
 "border-radius: 15px;                     /* <----  \u0437\u0430\u043a\u0440\u0443\u0433\u043b\u0435\u043d\u0438\u0435 \u043a\u0440\u0430\u0435\u0432  */ \n"
@@ -158,7 +158,7 @@ class Ui_MainWindow(object):
 "border: 2px solid #38302e; /*<----- \u0446\u0432\u0435\u0442 \u0433\u0440\u0430\u043d\u0438\u0446\u044b*/")
         self.button_apply = QPushButton(self.widget_control_panel_2)
         self.button_apply.setObjectName(u"button_apply")
-        self.button_apply.setGeometry(QRect(10, 180, 231, 41))
+        self.button_apply.setGeometry(QRect(10, 230, 231, 41))
         self.button_apply.setStyleSheet(u"QPushButton {\n"
 "color: #FBF1C7;\n"
 "background-color: #D79921;\n"
@@ -178,6 +178,19 @@ class Ui_MainWindow(object):
 "}\n"
 "")
         self.button_apply.setIconSize(QSize(28, 28))
+        self.line_own_port = QLineEdit(self.widget_control_panel_2)
+        self.line_own_port.setObjectName(u"line_own_port")
+        self.line_own_port.setGeometry(QRect(10, 130, 231, 41))
+        self.line_own_port.setStyleSheet(u"color: #FBF1C7;\n"
+"background-color: #665C54;\n"
+"border-radius: 15px;                     /* <----  \u0437\u0430\u043a\u0440\u0443\u0433\u043b\u0435\u043d\u0438\u0435 \u043a\u0440\u0430\u0435\u0432  */ \n"
+"font-weight: bold;\n"
+"font-size: 10pt;\n"
+"font-family: Montserrat ExtraBold;\n"
+"border: 2px solid #38302e; /*<----- \u0446\u0432\u0435\u0442 \u0433\u0440\u0430\u043d\u0438\u0446\u044b*/")
+        self.check_box_relay = QCheckBox(self.widget_control_panel_2)
+        self.check_box_relay.setObjectName(u"check_box_relay")
+        self.check_box_relay.setGeometry(QRect(20, 280, 221, 31))
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -189,10 +202,13 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Torna Messenger", None))
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"\u0427\u0430\u0442", None))
         self.button_send_message.setText("")
-        self.line_ip_address.setText(QCoreApplication.translate("MainWindow", u"IP \u0430\u0434\u0440\u0435\u0441", None))
+        self.line_ip_address.setText(QCoreApplication.translate("MainWindow", u"IP \u0430\u0434\u0440\u0435\u0441 \u043f\u043e\u043b\u0443\u0447\u0430\u0442\u0435\u043b\u044f", None))
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438", None))
-        self.line_port.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0440\u0442", None))
+        self.line_port.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0440\u0442 \u043f\u043e\u043b\u0443\u0447\u0430\u0442\u0435\u043b\u044f", None))
         self.line_your_name.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0430\u0448\u0435 \u041e\u0442\u043e\u0431\u0440\u0430\u0436\u0430\u0435\u043c\u043e\u0435 \u0438\u043c\u044f", None))
         self.button_apply.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u0438\u043c\u0435\u043d\u0438\u0442\u044c", None))
+        self.line_own_port.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0430\u0448 \u043f\u043e\u0440\u0442", None))
+        self.check_box_relay.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0430\u043d\u043e\u043d\u0438\u043c\u043d\u0443\u044e\n"
+"\u043f\u0435\u0440\u0435\u0441\u044b\u043b\u043a\u0443 (Relay)", None))
     # retranslateUi
 

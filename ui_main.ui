@@ -209,7 +209,7 @@ font-family: Montserrat ExtraBold;
 border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
      </property>
      <property name="text">
-      <string>IP адрес</string>
+      <string>IP адрес получателя</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_18">
@@ -264,14 +264,14 @@ font-family: Montserrat ExtraBold;
 border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
      </property>
      <property name="text">
-      <string>Порт</string>
+      <string>Порт получателя</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="line_your_name">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>180</y>
        <width>231</width>
        <height>41</height>
       </rect>
@@ -293,7 +293,7 @@ border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>180</y>
+       <y>230</y>
        <width>231</width>
        <height>41</height>
       </rect>
@@ -326,6 +326,42 @@ background-color: #B57614;
        <width>28</width>
        <height>28</height>
       </size>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="line_own_port">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #FBF1C7;
+background-color: #665C54;
+border-radius: 15px;                     /* &lt;----  закругление краев  */ 
+font-weight: bold;
+font-size: 10pt;
+font-family: Montserrat ExtraBold;
+border: 2px solid #38302e; /*&lt;----- цвет границы*/</string>
+     </property>
+     <property name="text">
+      <string>Ваш порт</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="check_box_relay">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>280</y>
+       <width>221</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Использовать анонимную
+пересылку (Relay)</string>
      </property>
     </widget>
    </widget>
