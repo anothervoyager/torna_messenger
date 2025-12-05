@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>resources/icons/wing.png</file>
+    <file>resources/icons/wing.svg</file>
+  </qresource>
+</RCC>
